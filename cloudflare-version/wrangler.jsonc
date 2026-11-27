@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "roomiematch-cloudflare",
+  "name": "roomiematch-api",
+  "account_id": "d546b0a6495a8f7c5ee8c9fa306e3513",
   "main": "worker/index.js",
   "compatibility_date": "2026-11-27",
   "compatibility_flags": ["nodejs_compat"],
