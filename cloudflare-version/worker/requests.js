@@ -1,0 +1,23 @@
+import {publicUser,publicProfile,jsonResponse as json} from "./auth.js";
+import {enrich,match} from "./ai.js";
+const TTL=14*86400000;
+const live=q=>q.status==="pending"&&Date.now()-q.created_at>TTL?"expired":q.status;
+const pair=(q,a,b)=>(q.from_user===a&&q.to_user===b)||(q.from_user===b&&q.to_user===a);
+const pubReq=(q,me,other,m)=>({id:q.id,status:live(q),at:q.created_at,user:{...publicProfile(other),match:m}});
+export async function handleRequests(request,env,path,meRow){const db=env.roomiematch_db,me=publicUser(meRow);let b={};if(request.method!=="GET"){try{b=await request.json();}catch{return json({error:"Invalid request body."},400);}}
+ try{
+  if(path==="/api/requests"&&request.method==="GET"){
+   const [rq,ur]=await Promise.all([db.prepare("SELECT * FROM requests WHERE from_user=? OR to_user=? ORDER BY created_at DESC").bind(me.id,me.id).all(),db.prepare("SELECT id,email,data_json FROM users").all()]);for(const q of (rq.results||[])){if(q.status==="pending"){let d={};try{d=JSON.parse(q.data_json||"{}");}catch{}if(d.resolveAt&&d.resolveAt<=Date.now()){d.status=d.resolveTo||"declined";await db.prepare("UPDATE requests SET status=?,data_json=? WHERE id=?").bind(d.status,JSON.stringify(d),q.id).run();q.status=d.status;q.data_json=JSON.stringify(d);const recipient=ur.results?.find(u=>u.id===q.from_user);if(recipient)await notify(env,{type:d.status,by:publicProfile(ur.results.find(u=>u.id===q.to_user))},q.from_user);}}}const users=new Map((ur.results||[]).map(x=>[x.id,x])),requests=rq.results||[],others=[...new Set(requests.map(q=>q.from_user===me.id?q.to_user:q.from_user))].map(id=>users.get(id)).filter(Boolean),matches=new Map(others.map(o=>[o.id,match(me,publicUser(o))]));const view=q=>{const o=users.get(q.from_user===me.id?q.to_user:q.from_user);return o?pubReq(q,me,o,matches.get(o.id)):null;};return json({incoming:requests.filter(q=>q.to_user===me.id).map(view).filter(Boolean),outgoing:requests.filter(q=>q.from_user===me.id).map(view).filter(Boolean)});
+  }
+  if(path==="/api/requests"&&request.method==="POST"){
+   if(!me.verified)return json({error:"Please verify your email before sending requests."},403);
+   const to=Number(b.to),o=await db.prepare("SELECT id,email,data_json FROM users WHERE id=?").bind(to).first();if(!o||to===me.id)return json({error:"Choose another person."},400);const op=publicUser(o);if((me.blocked||[]).includes(to)||(op.blocked||[]).includes(me.id))return json({error:"You cannot contact this person."},403);const m=match(me,op);if(m.block)return json({error:"You and this person have a dealbreaker conflict."},400);const existing=await db.prepare("SELECT * FROM requests WHERE (from_user=? AND to_user=?) OR (from_user=? AND to_user=?)").bind(me.id,to,to,me.id).all();if((existing.results||[]).some(q=>["pending","accepted"].includes(live(q))))return json({error:"A request already exists."},409);
+   const id=Number((await db.prepare("SELECT COALESCE(MAX(id),0)+1 AS id FROM requests").first()).id),at=Date.now(),demo=to<100,resolveTo=(m.them??m.s)>=50?"accepted":"declined",row={id,from_user:me.id,to_user:to,status:"pending",created_at:at,resolve_at:demo?at+4000:0,resolve_to:resolveTo};await db.prepare("INSERT INTO requests(id,from_user,to_user,status,created_at,data_json) VALUES(?,?,?,?,?,?)").bind(id,me.id,to,"pending",at,JSON.stringify({id,from:me.id,to,status:"pending",at,resolveAt:row.resolve_at,resolveTo})).run();await notify(env,{type:"request",from:publicProfile(meRow)},to);return json({id,from:me.id,to,status:"pending",at},201);
+  }
+  const m=path.match(/^\/api\/requests\/(\d+)\/respond$/);if(m&&request.method==="POST"){
+   const id=Number(m[1]),q=await db.prepare("SELECT * FROM requests WHERE id=?").bind(id).first();if(!q||q.to_user!==me.id)return json({error:"Request not found."},404);if(live(q)!=="pending")return json({error:"This request is no longer pending."},409);if(!["accept","decline"].includes(b.action))return json({error:"Invalid action."},400);const status=b.action==="accept"?"accepted":"declined",data=JSON.parse(q.data_json||"{}");data.status=status;await db.prepare("UPDATE requests SET status=?,data_json=? WHERE id=?").bind(status,JSON.stringify(data),id).run();await notify(env,{type:status,by:publicProfile(meRow)},q.from_user);return json({id,from:q.from_user,to:q.to_user,status,at:q.created_at});
+  }
+  return json({error:"Not found"},404);
+ }catch{return json({error:"Unable to process requests."},500);}
+}
+async function notify(env,event,uid){try{const id=env.ROOM_HUB.idFromName("roomiematch-global"),stub=env.ROOM_HUB.get(id);await stub.fetch("https://hub.internal/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({uid,event})});}catch{}}

@@ -1,0 +1,19 @@
+{
+  "name": "roomiematch-cloudflare",
+  "version": "3.1.0-cf.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "cf:whoami": "wrangler whoami",
+    "check": "node --check worker/index.js && node --check worker/auth.js && node --check worker/people.js && node --check worker/requests.js && node --check worker/messages.js && node --check worker/ai.js && node --check worker/hub.js && node --check worker/places.js && node --check public/js/main.js && node --check public/js/api.js && node --check public/js/ws.js",
+    "test": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "wrangler": "^4.168.0"
+  }
+}

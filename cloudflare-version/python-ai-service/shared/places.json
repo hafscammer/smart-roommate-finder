@@ -1,0 +1,325 @@
+{
+ "note": "Approximate demo coordinates. Replace with a geocoding API (for example Nominatim) in production.",
+ "places": [
+  {
+   "id": "fsd-center",
+   "city": "faisalabad",
+   "name": "City Centre",
+   "kind": "area",
+   "lat": 31.4181,
+   "lng": 73.079
+  },
+  {
+   "id": "fsd-d-ground",
+   "city": "faisalabad",
+   "name": "D Ground",
+   "kind": "area",
+   "lat": 31.427,
+   "lng": 73.089
+  },
+  {
+   "id": "fsd-madina-town",
+   "city": "faisalabad",
+   "name": "Madina Town",
+   "kind": "area",
+   "lat": 31.395,
+   "lng": 73.06
+  },
+  {
+   "id": "fsd-peoples-colony",
+   "city": "faisalabad",
+   "name": "Peoples Colony",
+   "kind": "area",
+   "lat": 31.426,
+   "lng": 73.105
+  },
+  {
+   "id": "fsd-samanabad",
+   "city": "faisalabad",
+   "name": "Samanabad",
+   "kind": "area",
+   "lat": 31.408,
+   "lng": 73.095
+  },
+  {
+   "id": "fsd-uaf",
+   "city": "faisalabad",
+   "name": "University of Agriculture",
+   "kind": "campus",
+   "lat": 31.43,
+   "lng": 73.07
+  },
+  {
+   "id": "fsd-gcuf",
+   "city": "faisalabad",
+   "name": "GC University",
+   "kind": "campus",
+   "lat": 31.42,
+   "lng": 73.076
+  },
+  {
+   "id": "fsd-industrial",
+   "city": "faisalabad",
+   "name": "Industrial Estate",
+   "kind": "work",
+   "lat": 31.4,
+   "lng": 73.12
+  },
+  {
+   "id": "lhr-gulberg",
+   "city": "lahore",
+   "name": "Gulberg",
+   "kind": "area",
+   "lat": 31.5204,
+   "lng": 74.3587
+  },
+  {
+   "id": "lhr-dha",
+   "city": "lahore",
+   "name": "DHA",
+   "kind": "area",
+   "lat": 31.4697,
+   "lng": 74.4088
+  },
+  {
+   "id": "lhr-johar-town",
+   "city": "lahore",
+   "name": "Johar Town",
+   "kind": "area",
+   "lat": 31.4697,
+   "lng": 74.2728
+  },
+  {
+   "id": "lhr-model-town",
+   "city": "lahore",
+   "name": "Model Town",
+   "kind": "area",
+   "lat": 31.4836,
+   "lng": 74.3292
+  },
+  {
+   "id": "lhr-center",
+   "city": "lahore",
+   "name": "City Centre",
+   "kind": "area",
+   "lat": 31.5497,
+   "lng": 74.3436
+  },
+  {
+   "id": "lhr-ichhra",
+   "city": "lahore",
+   "name": "Ichhra",
+   "kind": "area",
+   "lat": 31.537,
+   "lng": 74.322
+  },
+  {
+   "id": "lhr-lums",
+   "city": "lahore",
+   "name": "LUMS",
+   "kind": "campus",
+   "lat": 31.4704,
+   "lng": 74.4108
+  },
+  {
+   "id": "lhr-pu",
+   "city": "lahore",
+   "name": "Punjab University",
+   "kind": "campus",
+   "lat": 31.499,
+   "lng": 74.268
+  },
+  {
+   "id": "isb-blue-area",
+   "city": "islamabad",
+   "name": "Blue Area",
+   "kind": "work",
+   "lat": 33.7077,
+   "lng": 73.0551
+  },
+  {
+   "id": "isb-f7",
+   "city": "islamabad",
+   "name": "F-7",
+   "kind": "area",
+   "lat": 33.7215,
+   "lng": 73.0433
+  },
+  {
+   "id": "isb-f10",
+   "city": "islamabad",
+   "name": "F-10",
+   "kind": "area",
+   "lat": 33.696,
+   "lng": 73.013
+  },
+  {
+   "id": "isb-g11",
+   "city": "islamabad",
+   "name": "G-11",
+   "kind": "area",
+   "lat": 33.6644,
+   "lng": 72.9967
+  },
+  {
+   "id": "isb-i8",
+   "city": "islamabad",
+   "name": "I-8",
+   "kind": "area",
+   "lat": 33.6683,
+   "lng": 73.075
+  },
+  {
+   "id": "isb-bahria",
+   "city": "islamabad",
+   "name": "Bahria Town",
+   "kind": "area",
+   "lat": 33.52,
+   "lng": 73.11
+  },
+  {
+   "id": "isb-nust",
+   "city": "islamabad",
+   "name": "NUST",
+   "kind": "campus",
+   "lat": 33.643,
+   "lng": 72.99
+  },
+  {
+   "id": "isb-qau",
+   "city": "islamabad",
+   "name": "Quaid-i-Azam University",
+   "kind": "campus",
+   "lat": 33.749,
+   "lng": 73.137
+  },
+  {
+   "id": "lon-camden",
+   "city": "london",
+   "name": "Camden",
+   "kind": "area",
+   "lat": 51.539,
+   "lng": -0.1426
+  },
+  {
+   "id": "lon-shoreditch",
+   "city": "london",
+   "name": "Shoreditch",
+   "kind": "area",
+   "lat": 51.5265,
+   "lng": -0.0798
+  },
+  {
+   "id": "lon-brixton",
+   "city": "london",
+   "name": "Brixton",
+   "kind": "area",
+   "lat": 51.4613,
+   "lng": -0.1156
+  },
+  {
+   "id": "lon-stratford",
+   "city": "london",
+   "name": "Stratford",
+   "kind": "area",
+   "lat": 51.5416,
+   "lng": -0.0035
+  },
+  {
+   "id": "lon-kings-cross",
+   "city": "london",
+   "name": "King's Cross",
+   "kind": "area",
+   "lat": 51.5309,
+   "lng": -0.1233
+  },
+  {
+   "id": "lon-canary-wharf",
+   "city": "london",
+   "name": "Canary Wharf",
+   "kind": "work",
+   "lat": 51.5054,
+   "lng": -0.0235
+  },
+  {
+   "id": "lon-ucl",
+   "city": "london",
+   "name": "UCL",
+   "kind": "campus",
+   "lat": 51.5246,
+   "lng": -0.134
+  },
+  {
+   "id": "lon-imperial",
+   "city": "london",
+   "name": "Imperial College",
+   "kind": "campus",
+   "lat": 51.4988,
+   "lng": -0.1749
+  },
+  {
+   "id": "tor-downtown",
+   "city": "toronto",
+   "name": "Downtown",
+   "kind": "area",
+   "lat": 43.6532,
+   "lng": -79.3832
+  },
+  {
+   "id": "tor-kensington",
+   "city": "toronto",
+   "name": "Kensington Market",
+   "kind": "area",
+   "lat": 43.6547,
+   "lng": -79.4005
+  },
+  {
+   "id": "tor-north-york",
+   "city": "toronto",
+   "name": "North York",
+   "kind": "area",
+   "lat": 43.7615,
+   "lng": -79.4111
+  },
+  {
+   "id": "tor-scarborough",
+   "city": "toronto",
+   "name": "Scarborough",
+   "kind": "area",
+   "lat": 43.7764,
+   "lng": -79.2318
+  },
+  {
+   "id": "tor-liberty-village",
+   "city": "toronto",
+   "name": "Liberty Village",
+   "kind": "area",
+   "lat": 43.6379,
+   "lng": -79.421
+  },
+  {
+   "id": "tor-yorkville",
+   "city": "toronto",
+   "name": "Yorkville",
+   "kind": "area",
+   "lat": 43.6709,
+   "lng": -79.3933
+  },
+  {
+   "id": "tor-etobicoke",
+   "city": "toronto",
+   "name": "Etobicoke",
+   "kind": "area",
+   "lat": 43.6205,
+   "lng": -79.5132
+  },
+  {
+   "id": "tor-uoft",
+   "city": "toronto",
+   "name": "University of Toronto",
+   "kind": "campus",
+   "lat": 43.6629,
+   "lng": -79.3957
+  }
+ ]
+}

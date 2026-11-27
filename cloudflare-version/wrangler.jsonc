@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "roomiematch-cloudflare",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*", "/ws"] },
+  "d1_databases": [{ "binding": "roomiematch_db", "database_name": "roomiematch-db", "database_id": "4e238ed3-c379-422b-8b47-a85b3c25b40e", "remote": true }],
+  "durable_objects": { "bindings": [{ "name": "ROOM_HUB", "class_name": "RoomHub" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomHub"] }],
+  "vars": { "APP_MODE": "demo", "PHOTO_MAX_BYTES": "307200" }
+}

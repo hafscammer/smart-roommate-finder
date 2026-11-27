@@ -27,3 +27,8 @@ ai-service/models/meta.json
 .vscode/
 .idea/
 *.zip
+
+# Cloudflare local secrets and development state
+**/.dev.vars
+**/.dev.vars.*
+**/.wrangler/

@@ -1,0 +1,104 @@
+{
+  "version": "20261114184913",
+  "trained_at": "2026-11-14T18:49:13.031290+00:00",
+  "model": "HistGradientBoosting",
+  "sklearn": "1.8.0",
+  "features": [
+    "d_sleep",
+    "s_sleep",
+    "wd_sleep",
+    "wo_sleep",
+    "d_clean",
+    "s_clean",
+    "wd_clean",
+    "wo_clean",
+    "d_guests",
+    "s_guests",
+    "wd_guests",
+    "wo_guests",
+    "d_noise",
+    "s_noise",
+    "wd_noise",
+    "wo_noise",
+    "bud_ratio",
+    "bud_gap",
+    "same_city",
+    "same_type",
+    "beds_diff",
+    "furn_match",
+    "stay_diff",
+    "complement",
+    "both_smoke",
+    "both_pets",
+    "both_wfh",
+    "veg_match",
+    "area_km",
+    "commute_km",
+    "commute_km_rev",
+    "bio_sim",
+    "tag_jaccard"
+  ],
+  "n_profiles": 1500,
+  "n_pairs": 60000,
+  "n_real": 0,
+  "n_events": 0,
+  "collab_active": false,
+  "seed": 7,
+  "personas": [
+    "Lively \u00b7 Social",
+    "Home worker",
+    "Smoker",
+    "Pet owner",
+    "Vegetarian",
+    "Quiet \u00b7 Private"
+  ],
+  "metrics": {
+    "compat": {
+      "auc": 0.9459,
+      "accuracy": 0.8678,
+      "brier": 0.0912,
+      "baseline_auc": 0.889,
+      "auc_leaky_split": 0.9426,
+      "positive_rate": 0.4,
+      "train_pairs": 29469,
+      "test_pairs": 2443,
+      "split": "user-disjoint (70/10/20)"
+    },
+    "ranking": {
+      "ndcg5": {
+        "rule": 0.8527,
+        "forward": 0.9798,
+        "mutual": 0.9905,
+        "ltr": 0.99
+      },
+      "choice": "mutual",
+      "test_users": 300,
+      "list_size": 30
+    },
+    "tags": {
+      "micro_f1": 0.9838,
+      "macro_f1": 0.9853,
+      "top_precision": 1.0,
+      "top_coverage": 0.997,
+      "avg_tags_shown": 1.96,
+      "nodesc_precision": 1.0,
+      "nodesc_coverage": 0.97
+    },
+    "extract": {
+      "level_acc": 1.0,
+      "importance_acc": 0.9938,
+      "flag_f1": 1.0,
+      "profession_acc": 1.0
+    },
+    "moderation": {
+      "accuracy": 1.0
+    },
+    "rent": {
+      "mape": 0.1041,
+      "band_coverage": 0.679
+    },
+    "replies": {
+      "accuracy": 1.0
+    }
+  }
+}
