@@ -1,0 +1,243 @@
+{
+  "setup": {
+    "users": 1500,
+    "pairs": 60000,
+    "train_pairs": 29469,
+    "validation_pairs": 590,
+    "test_pairs": 2443,
+    "positive_rate": 0.4,
+    "seed": 7
+  },
+  "models": {
+    "Rule formula (original)": 0.889,
+    "Logistic regression": 0.9246,
+    "Random forest": 0.941,
+    "Gradient boosting (tuned)": 0.9461
+  },
+  "best_params": {
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "max_iter": 200
+  },
+  "delta_vs_rule_ci95": [
+    0.0485,
+    0.066
+  ],
+  "repeated_user_splits_auc": {
+    "mean": 0.9448,
+    "std": 0.0049
+  },
+  "ablation": {
+    "AI-tag overlap": {
+      "auc": 0.9445,
+      "delta": -0.0016
+    },
+    "Description similarity (LSA)": {
+      "auc": 0.9454,
+      "delta": -0.0007
+    },
+    "Commute and distance": {
+      "auc": 0.9275,
+      "delta": -0.0186
+    },
+    "Importance-weighted gaps": {
+      "auc": 0.9433,
+      "delta": -0.0028
+    },
+    "Signed gaps (asymmetry)": {
+      "auc": 0.9472,
+      "delta": 0.0011
+    },
+    "Property fit": {
+      "auc": 0.9453,
+      "delta": -0.0008
+    },
+    "Budget": {
+      "auc": 0.9251,
+      "delta": -0.021
+    }
+  },
+  "calibration": {
+    "ece": 0.0121,
+    "bins": [
+      [
+        0.017003555042037755,
+        0.014271151885830785,
+        981
+      ],
+      [
+        0.14520591311960832,
+        0.14492753623188406,
+        138
+      ],
+      [
+        0.2418725291699706,
+        0.18803418803418803,
+        117
+      ],
+      [
+        0.34553934382452983,
+        0.3697478991596639,
+        119
+      ],
+      [
+        0.4488879640886274,
+        0.4247787610619469,
+        113
+      ],
+      [
+        0.5508739749742207,
+        0.5384615384615384,
+        104
+      ],
+      [
+        0.651416725528008,
+        0.6260162601626016,
+        123
+      ],
+      [
+        0.751084472192709,
+        0.7463768115942029,
+        138
+      ],
+      [
+        0.855782525007566,
+        0.869198312236287,
+        237
+      ],
+      [
+        0.9501935544123314,
+        0.967828418230563,
+        373
+      ]
+    ]
+  },
+  "learning_curve": {
+    "0.1": 0.9376,
+    "0.25": 0.9421,
+    "0.5": 0.9428,
+    "1.0": 0.9466
+  },
+  "importance": [
+    [
+      "same_city",
+      0.0497
+    ],
+    [
+      "bud_ratio",
+      0.0458
+    ],
+    [
+      "commute_km",
+      0.0311
+    ],
+    [
+      "area_km",
+      0.0131
+    ],
+    [
+      "d_sleep",
+      0.013
+    ],
+    [
+      "d_guests",
+      0.0108
+    ],
+    [
+      "d_noise",
+      0.0082
+    ],
+    [
+      "d_clean",
+      0.0066
+    ],
+    [
+      "commute_km_rev",
+      0.0052
+    ],
+    [
+      "wd_guests",
+      0.0035
+    ],
+    [
+      "complement",
+      0.003
+    ],
+    [
+      "wd_sleep",
+      0.0029
+    ]
+  ],
+  "fairness": {
+    "city=faisalabad": {
+      "n": 734,
+      "auc": 0.943,
+      "calibration_gap": -0.002
+    },
+    "city=islamabad": {
+      "n": 513,
+      "auc": 0.933,
+      "calibration_gap": 0.001
+    },
+    "city=lahore": {
+      "n": 598,
+      "auc": 0.941,
+      "calibration_gap": 0.018
+    },
+    "city=london": {
+      "n": 313,
+      "auc": 0.948,
+      "calibration_gap": -0.011
+    },
+    "city=toronto": {
+      "n": 285,
+      "auc": 0.974,
+      "calibration_gap": -0.008
+    },
+    "role=host": {
+      "n": 1193,
+      "auc": 0.944,
+      "calibration_gap": -0.002
+    },
+    "role=seeker": {
+      "n": 1250,
+      "auc": 0.948,
+      "calibration_gap": 0.005
+    }
+  },
+  "ranking": {
+    "ndcg5": {
+      "rule": 0.8527,
+      "forward": 0.9811,
+      "mutual": 0.9904,
+      "ltr": 0.9906
+    },
+    "choice": "mutual",
+    "test_users": 300,
+    "list_size": 30
+  },
+  "tags": {
+    "micro_f1": 0.9838,
+    "macro_f1": 0.9853,
+    "top_precision": 1.0,
+    "top_coverage": 0.997,
+    "avg_tags_shown": 1.96,
+    "nodesc_precision": 1.0,
+    "nodesc_coverage": 0.97
+  },
+  "wild_extraction": {
+    "ML + rules (product)": {
+      "accuracy": 0.887,
+      "labels": 53
+    },
+    "ML only": {
+      "accuracy": 0.509,
+      "labels": 53
+    },
+    "Rules only": {
+      "accuracy": 0.774,
+      "labels": 53
+    }
+  },
+  "wild_n": 30
+}

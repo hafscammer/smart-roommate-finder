@@ -1,0 +1,28 @@
+{
+  "name": "roomiematch",
+  "version": "3.1.0",
+  "description": "Smart Roommate Finder: Express API with JWT auth, Python ML pipeline (compatibility + tagging), and a responsive web client",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "ai": "python ai-service/app.py",
+    "ai:train": "cd ai-service && python -m pipeline.train",
+    "ai:test": "cd ai-service && python -m unittest discover -s tests",
+    "ai:retrain": "node server/scripts/export-interactions.js && cd ai-service && python -m pipeline.train --real data/interactions.json",
+    "test": "node server/tests/smoke.js",
+    "ai:eval": "cd ai-service && python -m pipeline.evaluate"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "optionalDependencies": {
+    "@aws-sdk/client-s3": "^3.600.0",
+    "mongodb": "^6.8.0",
+    "nodemailer": "^6.9.14"
+  }
+}

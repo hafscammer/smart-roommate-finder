@@ -1,0 +1,29 @@
+# dependencies and build output
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# secrets and local configuration (copy .env.example to .env and fill it in)
+.env
+.env.*
+!.env.example
+
+# user data: personal details, password hashes, photos
+server/data/db.json
+server/data/photos/*
+!server/data/photos/.gitkeep
+ai-service/data/interactions.json
+ai-service/data/events.json
+
+# trained models (regenerated on first start; pickle files are tied to library versions)
+ai-service/models/*.joblib
+ai-service/models/meta.json
+
+# logs, editor and OS files, archives
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.zip
