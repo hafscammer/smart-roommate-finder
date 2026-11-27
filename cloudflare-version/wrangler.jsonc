@@ -4,10 +4,59 @@
   "account_id": "d546b0a6495a8f7c5ee8c9fa306e3513",
   "main": "worker/index.js",
   "compatibility_date": "2026-11-27",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*", "/ws"] },
-  "d1_databases": [{ "binding": "roomiematch_db", "database_name": "roomiematch-db", "database_id": "4e238ed3-c379-422b-8b47-a85b3c25b40e", "remote": true }],
-  "durable_objects": { "bindings": [{ "name": "ROOM_HUB", "class_name": "RoomHub" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomHub"] }],
-  "vars": { "APP_MODE": "demo", "PHOTO_MAX_BYTES": "307200" }
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*",
+      "/ws"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "roomiematch_db",
+      "database_name": "roomiematch-db",
+      "database_id": "4e238ed3-c379-422b-8b47-a85b3c25b40e",
+      "remote": true
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ROOM_HUB",
+        "class_name": "RoomHub"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "RoomHub"
+      ]
+    }
+  ],
+  "vars": {
+    "APP_MODE": "demo",
+    "PHOTO_MAX_BYTES": "307200"
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "persist": true
+    },
+    "issue_detection": {
+      "enabled": false
+    }
+  }
 }
