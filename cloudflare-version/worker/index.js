@@ -43,4 +43,4 @@ export default {async fetch(request,env){const url=new URL(request.url),path=url
   else response=json({error:"Not found"},404);return withHeaders(response);
  }
  return withHeaders(await env.ASSETS.fetch(request));
- }catch(e){return withHeaders(json({error:"Server error. Please try again."},500));}}};
+ }catch(e){console.error("RoomieMatch Worker request failed",{path,method:request.method,message:e?.message||String(e),stack:e?.stack});return withHeaders(json({error:"Server error. Please try again."},500));}}};
