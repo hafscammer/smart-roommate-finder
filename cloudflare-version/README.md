@@ -70,3 +70,13 @@ Paste the same strong secret used by the existing migration if preserving active
 - `roomiematch-v3.1-ai-lab.zip` supplied the complete v3.1 source baseline and model artifacts (model files are not deployed to Workers).
 - `roomiematch-feedback-fix.zip` supplied the updated people route.
 - `roomiematch-fix-only.zip` supplied the updated frontend `main.js`.
+
+## GitHub deployment to the existing Worker
+
+The deployment target is the existing `roomiematch-api` Worker at `https://roomiematch-api.wick28743.workers.dev/`. The previous `roomiematch-cloudflare` Worker is retained as a backup and is not targeted by this configuration.
+
+Deployment is deliberately **manual only**. The GitHub Actions workflow does not deploy on pushes. After reviewing and merging this change, add a repository Actions secret named `CLOUDFLARE_API_TOKEN` with Cloudflare account permission to edit Workers Scripts and read D1 metadata. Then open **Actions → Deploy RoomieMatch to Cloudflare → Run workflow** when you explicitly want to deploy. No API token or JWT secret belongs in Git.
+
+The Worker uses the existing D1 database ID configured above; do not create a replacement database or run destructive migrations. Before the first deployment to `roomiematch-api`, configure that Worker’s `JWT_SECRET` secret in Cloudflare using the same value as the currently working migration Worker if existing signed-in sessions must remain valid. Secrets are per-Worker and are not copied automatically. Do not paste secrets into GitHub files or chat. The first deployment also registers the `RoomHub` Durable Object class on the target Worker; it does not alter D1 user/profile/request/message rows.
+
+The workflow runs dependency installation, syntax checks, and smoke tests before it invokes Wrangler. A failed check prevents deployment. If Cloudflare presents a billing or plan-upgrade prompt, stop rather than enabling paid services.
