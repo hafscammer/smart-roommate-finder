@@ -127,7 +127,7 @@ const views = {
     ${sec("Review", `<div id="rv"></div><div class="note"><b>AI tags (up to 2):</b> <span id="pt"></span></div><div class="err" id="err" role="status"></div>`)}
     <div class="nav2"><button type="button" class="g" data-act="back">Back</button><div class="navr"><button type="button" data-act="next">Next</button><button id="sv" hidden>Save profile</button></div></div></form>
     <p><a href="#" data-act="out">Log out</a></p>`;
-    fill($("#pf"), { country: me.country || "Pakistan", gender_preference: me.gender_preference || "any", ...me, beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); syncCurrencyLabels(); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || ""; detectCountry(me.city || "");
+    fill($("#pf"), { ...me, country: me.country || "Pakistan", gender_preference: me.gender_preference_custom ? (me.gender_preference || "any") : (me.gender || "any"), beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); $("#pf").elements.gender_preference.dataset.custom = me.gender_preference_custom ? "1" : ""; syncCurrencyLabels(); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || ""; detectCountry(me.city || "");
   },
 
   async requests() {
@@ -217,7 +217,7 @@ function show() {
 function read(f) {
   const d = new FormData(f), n = k => +d.get(k), m = { w: {} };
   ["name", "city", "country", "gender", "gender_preference", "bio", "role", "type", "movein", "stay", "profession", "area", "anchor"].forEach(k => (m[k] = d.get(k) || ""));
-  m.age = n("age") || 22; ["min", "max", "beds"].forEach(k => (m[k] = n(k))); m.currency = currencyForCountry(m.country || "Pakistan");
+  m.gender_preference_custom = f.elements.gender_preference?.dataset.custom === "1" ? 1 : 0; m.age = n("age") || 22; ["min", "max", "beds"].forEach(k => (m[k] = n(k))); m.currency = currencyForCountry(m.country || "Pakistan");
   ["smoke", "pets", "wfh", "veg", "nosmoke", "nopets", "furn"].forEach(k => (m[k] = d.get(k) ? 1 : 0));
   TR.forEach(t => { m[t.k] = n(t.k) || 3; m.w[t.k] = n("w_" + t.k) || 3; }); return m;
 }
@@ -338,6 +338,8 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", async e => {
   if (e.target.form?.id === "pf" && e.target.name === "country") syncCurrencyLabels();
+  if (e.target.form?.id === "pf" && e.target.name === "gender") { const pref=e.target.form.elements.gender_preference; if(pref && !pref.dataset.custom) pref.value=e.target.value || "any"; }
+  if (e.target.form?.id === "pf" && e.target.name === "gender_preference") e.target.dataset.custom="1";
   if (e.target.id !== "pf-file") return; const file = e.target.files[0]; if (!file) return;
   if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 10e6) return toast("Choose a JPG, PNG or WebP image under 10 MB.", true);
   let r;
