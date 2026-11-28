@@ -1,5 +1,5 @@
 import { api, token, setToken } from "./api.js";
-import { esc, ic, TYPE, IMP, TR, snap, hue, avatar, chips, ring, seg, tog, complete, card, chipsOf, chipsHtml, cmpPanel, distText } from "./components.js";
+import { esc, ic, TYPE, IMP, TR, snap, hue, avatar, chips, ring, seg, tog, complete, card, chipsOf, chipsHtml, cmpPanel, distText, money, COUNTRY_CURRENCY, currencyForCountry } from "./components.js";
 import { connect, disconnect, onEvent, send as wsSend, live as wsLive } from "./ws.js";
 import { openCropper } from "./crop.js";
 const $ = s => document.querySelector(s), app = $("#app"), side = $("#side");
@@ -91,7 +91,7 @@ const views = {
 
   discover() {
     app.innerHTML = `<h2>Discover</h2><p class="mu">Ranked by AI compatibility with you.</p><form class="tools" id="fl">
-    <div class="row"><input name="city" placeholder="City" aria-label="City"><input name="max" type="number" placeholder="Max budget" aria-label="Max budget"><select name="sort" aria-label="Sort"><option value="match">Best match</option><option value="budget">Lowest budget</option><option value="new">Newest</option></select></div>
+    <div class="row"><input name="city" placeholder="City" aria-label="City"><input name="max" type="number" placeholder="Max budget (${me.currency || "PKR"})" aria-label="Max budget"><select name="sort" aria-label="Sort"><option value="match">Best match</option><option value="budget">Lowest budget</option><option value="new">Newest</option></select></div>
     <div class="row"><span class="lb">Property</span>${seg("type", [["", "Any"], ...Object.entries(TYPE)])}<span class="lb">Bedrooms</span>${seg("beds", [["", "Any"], [1, "1"], [2, "2"], [3, "3+"]])}</div>
     <div class="row"><span class="lb">Who</span>${seg("role", [["", "Everyone"], ["host", "Offering"], ["seeker", "Seeking"]])}${tog("furn", "Furnished")}${tog("saved", "Saved only")}</div></form><div class="grid" id="g">${sk(6)}</div>`;
     fill($("#fl"), F); load();
@@ -101,7 +101,7 @@ const views = {
     app.innerHTML = sk(1);
     const o = await api("/people/" + id), m = o.match;
     const act = { "": m.block ? '<button disabled>Not compatible</button>' : `<button data-act="conn" data-id="${o.id}">Send request</button>`, "pending-out": '<button disabled>Request sent</button>', "pending-in": '<a class="btn" href="#requests">Review their request</a>', accepted: `<a class="btn" href="#chat/${o.id}">Message</a>`, declined: '<button disabled>Declined</button>', expired: `<button data-act="conn" data-id="${o.id}">Send again</button>` }[o.rel];
-    const facts = [["Property", TYPE[o.type]], ["Bedrooms", o.beds], ["Furnished", o.furn ? "Yes" : "No"], ["Budget", `$${o.min}-${o.max}/mo`], ["Move-in", o.movein || "Flexible"], ["Stay", ST[o.stay] || "6 months"]];
+    const facts = [["Property", TYPE[o.type]], ["Bedrooms", o.beds], ["Furnished", o.furn ? "Yes" : "No"], ["Budget", `${money(o.min,o.currency)}-${money(o.max,o.currency)}/mo`], ["Move-in", o.movein || "Flexible"], ["Stay", ST[o.stay] || "6 months"]];
     app.innerHTML = `<a href="#discover" class="mu">&larr; Back to discover</a><div class="hero"><div class="cb" style="--h:${hue(o.name)}"></div><div class="hd">${avatar(o, "lg")}
     <div class="gr"><h2>${esc(o.name)}, ${o.age}</h2><span class="mu">${o.profession ? esc(o.profession) + " · " : ""}${esc(o.city || "No city yet")} · ${o.role === "host" ? "Offering" : "Looking for"} a ${TYPE[o.type].toLowerCase()}${o.verified ? ' · <span class="ver">Verified</span>' : ""}</span></div>${ring(m)}</div>
     <div class="acts">${act}<button class="g ${o.saved ? "on" : ""}" data-act="save" data-id="${o.id}">${ic("heart")} ${o.saved ? "Saved" : "Save"}</button><button class="g" data-act="block" data-id="${o.id}">Block</button><button class="g" data-act="report" data-id="${o.id}">Report</button></div></div>
@@ -115,8 +115,8 @@ const views = {
   profile() {
     step = 0; touched = new Set(); photoNew = undefined; const sec = (t, h) => `<section data-s hidden><h3>${t}</h3>${h}</section>`;
     app.innerHTML = `<h2>My profile</h2><p class="mu" id="stp"></p><div class="prog"><i id="pg"></i></div><form id="pf" class="wiz">
-    ${sec("About you", `<div class="photo"><div id="pp" aria-label="Profile photo preview"></div><div class="photo-tools"><div class="photo-actions"><button type="button" class="g sm" data-act="photo">Upload photo</button> <button type="button" class="g sm" data-act="photo-rm" disabled>Remove</button></div><p class="photo-status mu" id="photo-status" aria-live="polite">No profile photo selected</p><p class="mu"><small>Optional. JPG, PNG or WebP, up to 10 MB. Position your face inside the circle before saving.</small></p><input type="file" id="pf-file" accept="image/jpeg,image/png,image/webp" hidden></div></div><div class="two"><label>Name<input name="name" required></label><label>Age<input name="age" type="number" min="18" max="99"></label></div><label>City<input name="city" required></label><label>I am</label>${seg("role", [["seeker", "Looking for a place"], ["host", "Offering a place"]])}`)}
-    ${sec("The place", `<label>Property type</label>${seg("type", Object.entries(TYPE))}<label>Bedrooms</label>${seg("beds", [[1, "1"], [2, "2"], [3, "3"], [4, "4+"]])}<div class="seg">${tog("furn", "Furnished")}</div><div class="two"><label>Area<select name="area" id="sel-area"></select></label><label>Study or work location<select name="anchor" id="sel-anchor"></select></label></div><p class="mu"><small>Used to rank people by commute distance.</small></p><div class="two"><label>Min budget ($/mo)<input name="min" type="number" min="0"></label><label>Max budget ($/mo)<input name="max" type="number" min="0"></label></div><div class="pricebox" id="pricebox" hidden></div><div class="two"><label>Move-in date<input name="movein" type="date"></label><div><label>Stay length</label>${seg("stay", [["3", "3 mo"], ["6", "6 mo"], ["12", "12+ mo"]])}</div></div>`)}
+    ${sec("About you", `<div class="photo"><div id="pp" aria-label="Profile photo preview"></div><div class="photo-tools"><div class="photo-actions"><button type="button" class="g sm" data-act="photo">Upload photo</button> <button type="button" class="g sm" data-act="photo-rm" disabled>Remove</button></div><p class="photo-status mu" id="photo-status" aria-live="polite">No profile photo selected</p><p class="mu"><small>Optional. JPG, PNG or WebP, up to 10 MB. Position your face inside the circle before saving.</small></p><input type="file" id="pf-file" accept="image/jpeg,image/png,image/webp" hidden></div></div><div class="two"><label>Name<input name="name" required></label><label>Age<input name="age" type="number" min="18" max="99"></label></div><div class="two"><label>City<input name="city" required></label><label>Country<select name="country">${Object.keys(COUNTRY_CURRENCY).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("")}</select></label></div><div class="two"><label>Gender<select name="gender"><option value="">Prefer not to say</option><option value="female">Female</option><option value="male">Male</option><option value="nonbinary">Non-binary</option></select></label><label>Roommate gender preference<select name="gender_preference"><option value="any">Any gender</option><option value="female">Female roommates</option><option value="male">Male roommates</option><option value="nonbinary">Non-binary roommates</option></select></label></div><label>I am</label>${seg("role", [["seeker", "Looking for a place"], ["host", "Offering a place"]])}`)}
+    ${sec("The place", `<label>Property type</label>${seg("type", Object.entries(TYPE))}<label>Bedrooms</label>${seg("beds", [[1, "1"], [2, "2"], [3, "3"], [4, "4+"]])}<div class="seg">${tog("furn", "Furnished")}</div><div class="two"><label>Area<select name="area" id="sel-area"></select></label><label>Study or work location<select name="anchor" id="sel-anchor"></select></label></div><p class="mu"><small>Used to rank people by commute distance.</small></p><div class="two"><label>Min budget (<span data-currency-label>PKR</span>/mo)<input name="min" type="number" min="0"></label><label>Max budget (<span data-currency-label>PKR</span>/mo)<input name="max" type="number" min="0"></label></div><div class="pricebox" id="pricebox" hidden></div><div class="two"><label>Move-in date<input name="movein" type="date"></label><div><label>Stay length</label>${seg("stay", [["3", "3 mo"], ["6", "6 mo"], ["12", "12+ mo"]])}</div></div>`)}
     ${sec("In your words", `<p class="mu">Describe yourself and the home you want. The AI reads it and fills in your lifestyle, habits and must-haves for you.</p>
       <textarea name="bio" rows="6" maxlength="500" placeholder="Example: I'm a student who studies late and loves quiet evenings. I keep the kitchen spotless, it's a must. No smokers please."></textarea>
       <div class="seg starters">${STARTERS.map(([l, t]) => `<button type="button" class="g sm" data-act="starter" data-t="${esc(t)}">+ ${l}</button>`).join("")}</div>
@@ -127,7 +127,7 @@ const views = {
     ${sec("Review", `<div id="rv"></div><div class="note"><b>AI tags (up to 2):</b> <span id="pt"></span></div><div class="err" id="err" role="status"></div>`)}
     <div class="nav2"><button type="button" class="g" data-act="back">Back</button><div class="navr"><button type="button" data-act="next">Next</button><button id="sv" hidden>Save profile</button></div></div></form>
     <p><a href="#" data-act="out">Log out</a></p>`;
-    fill($("#pf"), { ...me, beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || "";
+    fill($("#pf"), { country: me.country || "Pakistan", gender_preference: me.gender_preference || "any", ...me, beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); syncCurrencyLabels(); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || ""; detectCountry(me.city || "");
   },
 
   async requests() {
@@ -216,8 +216,8 @@ function show() {
 }
 function read(f) {
   const d = new FormData(f), n = k => +d.get(k), m = { w: {} };
-  ["name", "city", "bio", "role", "type", "movein", "stay", "profession", "area", "anchor"].forEach(k => (m[k] = d.get(k) || ""));
-  m.age = n("age") || 22; ["min", "max", "beds"].forEach(k => (m[k] = n(k)));
+  ["name", "city", "country", "gender", "gender_preference", "bio", "role", "type", "movein", "stay", "profession", "area", "anchor"].forEach(k => (m[k] = d.get(k) || ""));
+  m.age = n("age") || 22; ["min", "max", "beds"].forEach(k => (m[k] = n(k))); m.currency = currencyForCountry(m.country || "Pakistan");
   ["smoke", "pets", "wfh", "veg", "nosmoke", "nopets", "furn"].forEach(k => (m[k] = d.get(k) ? 1 : 0));
   TR.forEach(t => { m[t.k] = n(t.k) || 3; m.w[t.k] = n("w_" + t.k) || 3; }); return m;
 }
@@ -252,10 +252,12 @@ async function extractNow() {
   try { const r = await api("/people/extract", "POST", { bio }); applyExtract(f, r); $("#aistat").textContent = r.engine === "ml" ? "Python ML model" : "Rule-based fallback"; } catch (e) { $("#aistat").textContent = ""; }
   paintChips();
 }
+function syncCurrencyLabels() { const f=$("#pf"); if(!f) return; const c=currencyForCountry(f.elements.country?.value||"Pakistan"); document.querySelectorAll("[data-currency-label]").forEach(x=>x.textContent=c); }
+async function detectCountry(city) { if(!city||city.length<2) return; try { const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&q="+encodeURIComponent(city)); const j=await r.json(), country=j?.[0]?.address?.country; if(!country) return; const f=$("#pf"); if(!f||!f.elements.country) return; const option=[...f.elements.country.options].find(o=>o.text.toLowerCase()===country.toLowerCase()); if(option){const oldCurrency=currencyForCountry(f.elements.country.value),newCurrency=currencyForCountry(option.value);if(oldCurrency!==newCurrency){try{const fx=await fetch("https://open.er-api.com/v6/latest/"+oldCurrency),rates=await fx.json(),rate=Number(rates?.rates?.[newCurrency]);if(rate>0){for(const key of ["min","max"]){const input=f.elements[key];if(input&&input.value!=="")input.value=String(Math.round(Number(input.value)*rate));}}}catch(e){}}f.elements.country.value=option.value;syncCurrencyLabels();priceNow();} } catch(e) {} }
 function renderReview() {
   const m = read($("#pf"));
   $("#rv").innerHTML = `<div class="rvw"><b>${esc(m.name || "Your name")}${m.age ? ", " + m.age : ""}</b><br><span class="mu">${esc(m.city || "No city yet")} · ${m.role === "host" ? "Offering" : "Looking for"} a ${(TYPE[m.type] || "place").toLowerCase()} · ${m.beds} bed · ${m.furn ? "furnished" : "unfurnished"}</span>
-  <p class="mu">Budget $${m.min}-${m.max}/mo${m.movein ? " · move-in " + esc(m.movein) : ""} · stay ${ST[m.stay] || "6 months"}</p><p>${m.bio ? esc(m.bio) : '<span class="mu">No description yet. Go back and write a few sentences.</span>'}</p><div>${chipsHtml(chipsOf(m))}</div></div>`;
+  <p class="mu">Budget ${money(m.min,m.currency)}-${money(m.max,m.currency)}/mo${m.movein ? " · move-in " + esc(m.movein) : ""} · stay ${ST[m.stay] || "6 months"}</p><p>${m.bio ? esc(m.bio) : '<span class="mu">No description yet. Go back and write a few sentences.</span>'}</p><div>${chipsHtml(chipsOf(m))}</div></div>`;
   tagPreview();
 }
 function tagPreview() { clearTimeout(timer); timer = setTimeout(async () => { try { const t = await api("/people/tags", "POST", read($("#pf"))); $("#pt").innerHTML = t.length ? chips(t) : '<span class="mu">None yet. Describe yourself to get up to two tags.</span>'; } catch (e) {} }, 200); }
@@ -273,10 +275,10 @@ async function priceNow() { // AI price check from the rent model
   const f = $("#pf"), box = $("#pricebox"); if (!f || !box) return; const m = read(f); if (!m.city) { box.hidden = true; return; }
   try {
     const p = await api("/people/price", "POST", m);
-    box.hidden = false; box.innerHTML = `<b>AI price check</b><br><small>Typical ${(TYPE[m.type] || "place").toLowerCase()} in ${esc(m.city)}: <b>$${p.low}-${p.high}</b> a month (median $${p.mid}).${VERDICT[p.verdict] ? ` Your ${m.role === "host" ? "asking rent" : "budget"} is ${VERDICT[p.verdict]}.` : ""}${p.known_city === false ? " Rough estimate: little data for this city." : ""}</small>`;
+    box.hidden = false; box.innerHTML = `<b>AI price check</b><br><small>Typical ${(TYPE[m.type] || "place").toLowerCase()} in ${esc(m.city)}: <b>${money(p.low,m.currency)}-${money(p.high,m.currency)}</b> a month (median ${money(p.mid,m.currency)}).${VERDICT[p.verdict] ? ` Your ${m.role === "host" ? "asking rent" : "budget"} is ${VERDICT[p.verdict]}.` : ""}${p.known_city === false ? " Rough estimate: little data for this city." : ""}</small>`;
   } catch (e) { box.hidden = true; }
 }
-const priceHtml = o => { const p = o.price; return p ? `<div class="pricebox"><b>AI price check</b><br><small>Typical ${o.type} in ${esc(o.city || "this area")}: <b>$${p.low}-${p.high}</b> a month (median $${p.mid}).${VERDICT[p.verdict] ? ` This ${o.role === "host" ? "asking rent" : "budget"} is ${VERDICT[p.verdict]}.` : ""}${p.known_city === false ? " Rough estimate: little data for this city." : ""}</small></div>` : ""; };
+const priceHtml = o => { const p = o.price; return p ? `<div class="pricebox"><b>AI price check</b><br><small>Typical ${o.type} in ${esc(o.city || "this area")}: <b>${money(p.low,o.currency)}-${money(p.high,o.currency)}</b> a month (median ${money(p.mid,o.currency)}).${VERDICT[p.verdict] ? ` This ${o.role === "host" ? "asking rent" : "budget"} is ${VERDICT[p.verdict]}.` : ""}${p.known_city === false ? " Rough estimate: little data for this city." : ""}</small></div>` : ""; };
 const distHtml = m => (distText(m) ? `<p class="mu" style="margin:8px 0 0">${esc(distText(m))}</p>` : "");
 function banner() {
   const b = $("#banner"); if (!b) return;
@@ -326,15 +328,15 @@ document.addEventListener("input", e => {
   if (f.id === "fl") { F = Object.fromEntries([...new FormData(f)].filter(([, v]) => v)); F.sort = F.sort || "match"; clearTimeout(timer); timer = setTimeout(load, 250); }
   if (f.id === "pf") {
     const n = e.target.name; if (e.target.tagName === "SELECT") e.target.dataset.v = e.target.value;
-    if (n === "name") paintPhoto();
-    if (n === "city") { clearTimeout(ct); ct = setTimeout(() => { loadPlaces(); priceNow(); }, 450); }
+    if (n === "name") paintPhoto();\n    if (n === "country") syncCurrencyLabels();
+    if (n === "city") { clearTimeout(ct); ct = setTimeout(() => { loadPlaces(); detectCountry(e.target.value.trim()); priceNow(); }, 650); }
     if (["type", "beds", "furn", "min", "max", "area", "role"].includes(n)) { clearTimeout(pt); pt = setTimeout(priceNow, 450); }
     if (n === "bio") { clearTimeout(xt); xt = setTimeout(extractNow, 500); } else if (n) { touched.add(n); if (step === 2) paintChips(); }
   }
   if (f.id === "mf" && Date.now() - lastTyping > 1500) { lastTyping = Date.now(); wsSend({ type: "typing", to: +f.dataset.to }); }
 });
 document.addEventListener("change", async e => {
-  if (e.target.id !== "pf-file") return; const file = e.target.files[0]; if (!file) return;
+  if (e.target.form?.id === "pf" && e.target.name === "country") syncCurrencyLabels();\n  if (e.target.id !== "pf-file") return; const file = e.target.files[0]; if (!file) return;
   if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 10e6) return toast("Choose a JPG, PNG or WebP image under 10 MB.", true);
   let r;
   try { r = await openCropper(file); } catch (err) { r = undefined; }
