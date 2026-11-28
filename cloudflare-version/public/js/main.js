@@ -306,7 +306,7 @@ document.addEventListener("click", async e => {
     if (a === "conn") { await api("/requests", "POST", { to: id }); toast("Request sent"); return go(); }
     if (a === "acc" || a === "dec") { await api(`/requests/${id}/respond`, "POST", { action: a === "acc" ? "accept" : "decline" }); toast(a === "acc" ? "Connected. You can now message them." : "Request declined"); await badges(); return go(); }
     if (a === "save") { const r = await api(`/people/${id}/save`, "POST"); toast(r.saved ? "Saved" : "Removed from saved"); if (route()[0] === "u") return go(); b.classList.toggle("on", r.saved); b.setAttribute("aria-pressed", r.saved); }
-    if (a === "feedback") { const r = await api(`/people/${id}/feedback`, "POST", { value: b.dataset.value }); toast(r.message); return load(); }
+    if (a === "feedback") { const value = b.classList.contains("selected") ? "" : b.dataset.value; b.disabled = true; try { const r = await api(`/people/${id}/feedback`, "POST", { value }); toast(r.message); return load(); } finally { b.disabled = false; } }
     if (a === "block") { if (!confirm("Block this person? You will no longer see each other.")) return; await api(`/people/${id}/block`, "POST"); toast("Blocked"); to("discover"); }
     if (a === "report") { const reason = prompt("What is the problem? (spam, fake profile, harassment...)"); if (!reason) return; await api(`/people/${id}/report`, "POST", { reason }); toast("Report sent to the moderators"); }
   } catch (err) { toast(err.message, true); }
