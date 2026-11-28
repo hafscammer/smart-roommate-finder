@@ -91,7 +91,7 @@ const views = {
 
   discover() {
     app.innerHTML = `<h2>Discover</h2><p class="mu">Ranked by AI compatibility with you.</p><form class="tools" id="fl">
-    <div class="row"><input name="city" placeholder="City" aria-label="City"><input name="max" type="number" placeholder="Max budget" aria-label="Max budget"><select name="sort" aria-label="Sort"><option value="match">Best match</option><option value="budget">Lowest budget</option><option value="new">Newest</option></select></div>
+    <div class="row"><input name="city" placeholder="City" aria-label="City"><input name="max" type="number" placeholder="Max budget (${me.currency || "PKR"})" aria-label="Max budget"><select name="sort" aria-label="Sort"><option value="match">Best match</option><option value="budget">Lowest budget</option><option value="new">Newest</option></select></div>
     <div class="row"><span class="lb">Property</span>${seg("type", [["", "Any"], ...Object.entries(TYPE)])}<span class="lb">Bedrooms</span>${seg("beds", [["", "Any"], [1, "1"], [2, "2"], [3, "3+"]])}</div>
     <div class="row"><span class="lb">Who</span>${seg("role", [["", "Everyone"], ["host", "Offering"], ["seeker", "Seeking"]])}${tog("furn", "Furnished")}${tog("saved", "Saved only")}</div></form><div class="grid" id="g">${sk(6)}</div>`;
     fill($("#fl"), F); load();
