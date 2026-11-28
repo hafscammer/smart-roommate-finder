@@ -20,7 +20,7 @@ const route = () => { const [p, a] = (location.hash.slice(1) || "home").split("/
 function nav() {
   if (!me) { side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">🌙</button></div>'; setTheme(document.documentElement.dataset.theme || "light"); return; }
   const [p] = route(), L = [["home", "Home", "home"], ["discover", "Discover", "search"], ["requests", "Requests", "bell", B.req], ["chat", "Messages", "chat", B.msg], ["profile", "My profile", "user"], ["lab", "AI Lab", "sparkles"]];
-  side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">☾ Night mode</button></div>' + L.map(([h, l, i, n]) => `<a class="nl ${p === h || (h === "discover" && p === "u") ? "on" : ""}" href="#${h}">${ic(i)}<span>${l}</span>${n ? `<em class="bd">${n}</em>` : ""}</a>`).join("") +
+  side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">🌙</button></div>' + L.map(([h, l, i, n]) => `<a class="nl ${p === h || (h === "discover" && p === "u") ? "on" : ""}" href="#${h}">${ic(i)}<span>${l}</span>${n ? `<em class="bd">${n}</em>` : ""}</a>`).join("") +
     (AIS ? `<small class="aib" title="Which engine scores your matches">AI: ${esc(AIS.label)}</small>` : "") + `<div class="me">${avatar(me, "sm")}<div><b>${esc(me.name)}</b><br><a href="#" data-act="out"><small>Log out</small></a></div></div>`;
   setTheme(document.documentElement.dataset.theme || "light");
 }
