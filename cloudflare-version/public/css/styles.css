@@ -291,3 +291,23 @@ textarea{resize:vertical;max-width:100%}
  #app>*,.grid>.card{animation:none!important}
  button,.btn,.nl,.card,.stat,.pan,.wiz,.hero,.tools,.lab-status{transition:none!important}
 }
+
+
+/* Compact card refinement with a soft ambient accent glow */
+.grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}
+.card{border-radius:17px;box-shadow:0 2px 12px color-mix(in srgb,var(--pr) 7%,transparent);transition:box-shadow .24s ease,border-color .24s ease,transform .24s ease}
+.card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--pr) 45%,var(--bd));box-shadow:0 0 0 1px color-mix(in srgb,var(--pr) 12%,transparent),0 5px 22px color-mix(in srgb,var(--pr) 17%,transparent)}
+.card .cb{height:58px}
+.card .ch{gap:10px;padding:0 13px;margin-top:-22px}
+.card .ch>div:last-child{margin-top:22px}
+.card .ch .av{width:76px;height:76px;font-size:29px}
+.card .body{padding:8px 13px 2px}
+.card .facts{gap:5px}
+.card .facts span{font-size:11px;padding:2px 7px}
+.card .ca{padding:5px 12px 11px 13px}
+.stat{padding:13px 15px;border-radius:15px;box-shadow:0 2px 12px color-mix(in srgb,var(--pr) 6%,transparent)}
+.stat b{font-size:30px}
+.stat:hover{transform:translateY(-1px);box-shadow:0 0 0 1px color-mix(in srgb,var(--pr) 13%,transparent),0 5px 20px color-mix(in srgb,var(--pr) 15%,transparent)}
+.theme-toggle{color:var(--tx)!important;font-family:inherit;font-size:23px;line-height:1;font-weight:400}
+.theme-toggle:hover{color:var(--pr)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--pr) 18%,transparent),0 3px 14px color-mix(in srgb,var(--pr) 16%,transparent)}
+@media(max-width:560px){.grid{grid-template-columns:minmax(0,1fr);gap:11px}.card .cb{height:54px}.card .ch .av{width:70px;height:70px;font-size:26px}.stat{padding:11px 12px}.stat b{font-size:27px}}
