@@ -127,7 +127,7 @@ const views = {
     ${sec("Review", `<div id="rv"></div><div class="note"><b>AI tags (up to 2):</b> <span id="pt"></span></div><div class="err" id="err" role="status"></div>`)}
     <div class="nav2"><button type="button" class="g" data-act="back">Back</button><div class="navr"><button type="button" data-act="next">Next</button><button id="sv" hidden>Save profile</button></div></div></form>
     <p><a href="#" data-act="out">Log out</a></p>`;
-    fill($("#pf"), { country: me.country || "Pakistan", gender_preference: me.gender_preference || "any", ...me, beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); syncCurrencyLabels(); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || "";
+    fill($("#pf"), { country: me.country || "Pakistan", gender_preference: me.gender_preference || "any", ...me, beds: Math.min(me.beds, 4), ...Object.fromEntries(TR.flatMap(t => [[t.k, snap(me[t.k])], ["w_" + t.k, snap(me.w[t.k])]])) }); syncCurrencyLabels(); show(); paintChips(); paintPhoto(); $("#sel-area").dataset.v = me.area || ""; $("#sel-anchor").dataset.v = me.anchor || ""; detectCountry(me.city || "");
   },
 
   async requests() {
@@ -253,7 +253,7 @@ async function extractNow() {
   paintChips();
 }
 function syncCurrencyLabels() { const f=$("#pf"); if(!f) return; const c=currencyForCountry(f.elements.country?.value||"Pakistan"); document.querySelectorAll("[data-currency-label]").forEach(x=>x.textContent=c); }
-async function detectCountry(city) { if(!city||city.length<2) return; try { const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&q="+encodeURIComponent(city)); const j=await r.json(), country=j?.[0]?.address?.country; if(!country) return; const f=$("#pf"); if(!f||!f.elements.country) return; const option=[...f.elements.country.options].find(o=>o.text.toLowerCase()===country.toLowerCase()); if(option){f.elements.country.value=option.value;syncCurrencyLabels();priceNow();} } catch(e) {} }
+async function detectCountry(city) { if(!city||city.length<2) return; try { const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&q="+encodeURIComponent(city)); const j=await r.json(), country=j?.[0]?.address?.country; if(!country) return; const f=$("#pf"); if(!f||!f.elements.country) return; const option=[...f.elements.country.options].find(o=>o.text.toLowerCase()===country.toLowerCase()); if(option){const oldCurrency=currencyForCountry(f.elements.country.value),newCurrency=currencyForCountry(option.value);if(oldCurrency!==newCurrency){try{const fx=await fetch("https://open.er-api.com/v6/latest/"+oldCurrency),rates=await fx.json(),rate=Number(rates?.rates?.[newCurrency]);if(rate>0){for(const key of ["min","max"]){const input=f.elements[key];if(input&&input.value!=="")input.value=String(Math.round(Number(input.value)*rate));}}}catch(e){}}f.elements.country.value=option.value;syncCurrencyLabels();priceNow();} } catch(e) {} }
 function renderReview() {
   const m = read($("#pf"));
   $("#rv").innerHTML = `<div class="rvw"><b>${esc(m.name || "Your name")}${m.age ? ", " + m.age : ""}</b><br><span class="mu">${esc(m.city || "No city yet")} · ${m.role === "host" ? "Offering" : "Looking for"} a ${(TYPE[m.type] || "place").toLowerCase()} · ${m.beds} bed · ${m.furn ? "furnished" : "unfurnished"}</span>
