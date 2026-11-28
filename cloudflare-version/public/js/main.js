@@ -115,7 +115,7 @@ const views = {
   profile() {
     step = 0; touched = new Set(); photoNew = undefined; const sec = (t, h) => `<section data-s hidden><h3>${t}</h3>${h}</section>`;
     app.innerHTML = `<h2>My profile</h2><p class="mu" id="stp"></p><div class="prog"><i id="pg"></i></div><form id="pf" class="wiz">
-    ${sec("About you", `<div class="photo"><div id="pp"></div><div><button type="button" class="g sm" data-act="photo">Upload photo</button> <button type="button" class="g sm" data-act="photo-rm">Remove</button><p class="mu"><small>Optional. JPG, PNG or WebP. We crop it to a square.</small></p><input type="file" id="pf-file" accept="image/jpeg,image/png,image/webp" hidden></div></div><div class="two"><label>Name<input name="name" required></label><label>Age<input name="age" type="number" min="18" max="99"></label></div><label>City<input name="city" required></label><label>I am</label>${seg("role", [["seeker", "Looking for a place"], ["host", "Offering a place"]])}`)}
+    ${sec("About you", `<div class="photo"><div id="pp" aria-label="Profile photo preview"></div><div class="photo-tools"><div class="photo-actions"><button type="button" class="g sm" data-act="photo">Upload photo</button> <button type="button" class="g sm" data-act="photo-rm" disabled>Remove</button></div><p class="photo-status mu" id="photo-status" aria-live="polite">No profile photo selected</p><p class="mu"><small>Optional. JPG, PNG or WebP, up to 10 MB. Position your face inside the circle before saving.</small></p><input type="file" id="pf-file" accept="image/jpeg,image/png,image/webp" hidden></div></div><div class="two"><label>Name<input name="name" required></label><label>Age<input name="age" type="number" min="18" max="99"></label></div><label>City<input name="city" required></label><label>I am</label>${seg("role", [["seeker", "Looking for a place"], ["host", "Offering a place"]])}`)}
     ${sec("The place", `<label>Property type</label>${seg("type", Object.entries(TYPE))}<label>Bedrooms</label>${seg("beds", [[1, "1"], [2, "2"], [3, "3"], [4, "4+"]])}<div class="seg">${tog("furn", "Furnished")}</div><div class="two"><label>Area<select name="area" id="sel-area"></select></label><label>Study or work location<select name="anchor" id="sel-anchor"></select></label></div><p class="mu"><small>Used to rank people by commute distance.</small></p><div class="two"><label>Min budget ($/mo)<input name="min" type="number" min="0"></label><label>Max budget ($/mo)<input name="max" type="number" min="0"></label></div><div class="pricebox" id="pricebox" hidden></div><div class="two"><label>Move-in date<input name="movein" type="date"></label><div><label>Stay length</label>${seg("stay", [["3", "3 mo"], ["6", "6 mo"], ["12", "12+ mo"]])}</div></div>`)}
     ${sec("In your words", `<p class="mu">Describe yourself and the home you want. The AI reads it and fills in your lifestyle, habits and must-haves for you.</p>
       <textarea name="bio" rows="6" maxlength="500" placeholder="Example: I'm a student who studies late and loves quiet evenings. I keep the kitchen spotless, it's a must. No smokers please."></textarea>
@@ -228,8 +228,12 @@ function paintPhoto() {
   const name = f.elements.name?.value || me.name || "Your profile";
   const photo = photoNew === undefined ? (me.photo || "") : (photoNew || "");
   box.innerHTML = avatar({ name, photo }, "lg photo-preview");
+  const upload = document.querySelector("[data-act=photo]"), remove = document.querySelector("[data-act=photo-rm]"), status = $("#photo-status");
+  if (upload) upload.textContent = photo ? "Replace photo" : "Upload photo";
+  if (remove) remove.disabled = !photo;
+  if (status) status.textContent = photoNew === null ? "Photo removed — save your profile to apply." : photoNew !== undefined ? "New photo selected — save your profile to apply." : photo ? "Current profile photo" : "No profile photo selected";
   const image = box.querySelector("img");
-  if (image) image.addEventListener("error", () => { image.remove(); }, { once: true });
+  if (image) image.addEventListener("error", () => { image.remove(); box.querySelector(".av")?.classList.remove("has-photo"); if (status) status.textContent = "Could not load this photo. Choose another image."; }, { once: true });
 }
 function applyExtract(f, r) {
   if (!touched.has("profession") && f.elements.profession) f.elements.profession.value = r.profession || "";
@@ -294,7 +298,7 @@ document.addEventListener("click", async e => {
     if (a === "out") { e.preventDefault(); setToken(null); disconnect(); me = null; B = { req: 0, msg: 0 }; location.hash = ""; return go(); }
     if (a === "resend") { const r = await api("/auth/resend", "POST"); devLink = r.devLink || devLink; banner(); return toast(r.already ? "Your email is already verified." : "Verification email sent."); }
     if (a === "photo") return $("#pf-file").click();
-    if (a === "photo-rm") { photoNew = null; return paintPhoto(); }
+    if (a === "photo-rm") { photoNew = null; const input = $("#pf-file"); if (input) input.value = ""; return paintPhoto(); }
     if (a === "starter") { const t = $("#pf").elements.bio; t.value = (t.value.trim() + " " + b.dataset.t).trim().slice(0, 500); return extractNow(); }
     if (a === "cmp") { const p = $("#cmp"), open = p.hidden; p.hidden = !open; b.setAttribute("aria-expanded", open); b.textContent = open ? "Hide comparison" : "Compare lifestyle with you"; if (open) p.scrollIntoView({ behavior: "smooth", block: "nearest" }); return; }
     if (a === "next") { if (step === 0 && !$("#pf").reportValidity()) return; step++; return show(); }
