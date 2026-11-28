@@ -21,7 +21,7 @@ export function openCropper(file) {
       const done = v => { document.removeEventListener("keydown", onKey); root.remove(); URL.revokeObjectURL(url); resolve(v); };
       const onKey = e => {
         if (e.key === "Escape") { e.preventDefault(); done(null); return; }
-        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key) && root.isConnected) { e.preventDefault(); const step = e.shiftKey ? 12 : 3; if (e.key === "ArrowUp") oy += step; if (e.key === "ArrowDown") oy -= step; if (e.key === "ArrowLeft") ox += step; if (e.key === "ArrowRight") ox -= step; draw(); }
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key) && root.isConnected && document.activeElement === cv) { e.preventDefault(); const step = e.shiftKey ? 12 : 3; if (e.key === "ArrowUp") oy += step; if (e.key === "ArrowDown") oy -= step; if (e.key === "ArrowLeft") ox += step; if (e.key === "ArrowRight") ox -= step; draw(); }
       };
       cv.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY, ox, oy }; cv.setPointerCapture(e.pointerId); cv.focus(); });
       cv.addEventListener("pointermove", e => { if (!drag) return; const r = cv.getBoundingClientRect(); ox = drag.ox + (e.clientX - drag.x) * (S / r.width); oy = drag.oy + (e.clientY - drag.y) * (S / r.height); draw(); });
