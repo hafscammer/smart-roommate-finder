@@ -44,7 +44,7 @@
     "PHOTO_MAX_BYTES": "307200"
   },
   "observability": {
-    "enabled": false,
+    "enabled": true,
     "head_sampling_rate": 1,
     "redact_query_string": false,
     "logs": {
