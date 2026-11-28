@@ -6,7 +6,7 @@ const $ = s => document.querySelector(s), app = $("#app"), side = $("#side");
 let me = null, F = { sort: "match" }, mode = "login", timer, poll, step = 0, lastTh = "", convos = [], B = { req: 0, msg: 0 }, AIS = null, touched = new Set(), xt, ct, pt, photoNew, devLink = "", typingT, lastTyping = 0;
 const ST = { 3: "3 months", 6: "6 months", 12: "12+ months" }, STEPS = 4;
 const THEME_KEY = "roomiematch-theme";
-function setTheme(theme) { document.documentElement.dataset.theme = theme; try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} const b = $("#theme-toggle"); if (b) { b.textContent = theme === "dark" ? "☀ Light mode" : "☾ Night mode"; b.setAttribute("aria-pressed", String(theme === "dark")); } }
+function setTheme(theme) { document.documentElement.dataset.theme = theme; try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} const b = $("#theme-toggle"); if (b) { b.textContent = theme === "dark" ? "☀️" : "🌙"; b.setAttribute("aria-label", theme === "dark" ? "Switch to light appearance" : "Switch to dark appearance"); b.setAttribute("title", b.getAttribute("aria-label")); b.setAttribute("aria-pressed", String(theme === "dark")); } }
 function initTheme() { let saved = "light"; try { saved = localStorage.getItem(THEME_KEY) || "light"; } catch (e) {} setTheme(saved === "dark" ? "dark" : "light"); }
 
 const STARTERS = [["Night owl", "I'm a night owl who works late."], ["Early bird", "I'm an early riser and love mornings."], ["Tidy", "I keep the place very tidy."], ["Relaxed", "I'm relaxed about mess."], ["Hosts friends", "I love hosting friends and game nights."], ["Needs quiet", "I need a quiet home to study, it's a must."], ["Works from home", "I work from home."], ["No smokers", "Please no smokers."], ["Has a pet", "I have a cat."]];
@@ -18,9 +18,9 @@ const time = ts => new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute
 const route = () => { const [p, a] = (location.hash.slice(1) || "home").split("/"); if (p === "verify" || p === "reset") return [p, a]; return [me ? (views[p] && p !== "auth" ? p : "home") : "auth", a]; };
 
 function nav() {
-  if (!me) { side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">☾ Night mode</button></div>'; setTheme(document.documentElement.dataset.theme || "light"); return; }
+  if (!me) { side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">🌙</button></div>'; setTheme(document.documentElement.dataset.theme || "light"); return; }
   const [p] = route(), L = [["home", "Home", "home"], ["discover", "Discover", "search"], ["requests", "Requests", "bell", B.req], ["chat", "Messages", "chat", B.msg], ["profile", "My profile", "user"], ["lab", "AI Lab", "sparkles"]];
-  side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">☾ Night mode</button></div>' + L.map(([h, l, i, n]) => `<a class="nl ${p === h || (h === "discover" && p === "u") ? "on" : ""}" href="#${h}">${ic(i)}<span>${l}</span>${n ? `<em class="bd">${n}</em>` : ""}</a>`).join("") +
+  side.innerHTML = '<div class="brandrow"><div class="logo">RoomieMatch</div><button id="theme-toggle" class="g sm theme-toggle" type="button" data-act="theme">🌙</button></div>' + L.map(([h, l, i, n]) => `<a class="nl ${p === h || (h === "discover" && p === "u") ? "on" : ""}" href="#${h}">${ic(i)}<span>${l}</span>${n ? `<em class="bd">${n}</em>` : ""}</a>`).join("") +
     (AIS ? `<small class="aib" title="Which engine scores your matches">AI: ${esc(AIS.label)}</small>` : "") + `<div class="me">${avatar(me, "sm")}<div><b>${esc(me.name)}</b><br><a href="#" data-act="out"><small>Log out</small></a></div></div>`;
   setTheme(document.documentElement.dataset.theme || "light");
 }
