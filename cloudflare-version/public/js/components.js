@@ -11,7 +11,7 @@ export const TR = [
 export const snap = v => (v <= 2 ? 1 : v >= 4 ? 5 : 3);
 export const lbl = (k, v) => TR.find(t => t.k === k).o.find(x => x[0] === snap(v))[1];
 export const hue = s => [...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) * 47 % 360;
-export const avatar = (u, c = "") => { const name = u?.name || "?", photo = typeof u?.photo === "string" ? u.photo : "", ok = /^(\/photos\/|https:\/\/|data:image\/)/.test(photo); return `<div class="av ${c}" style="--h:${hue(name)}">${esc(name[0].toUpperCase())}${ok ? `<img src="${esc(photo)}" alt="" loading="${c.includes("lg") ? "eager" : "lazy"}" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>`; };
+export const avatar = (u, c = "") => { const name = u?.name || "?", photo = typeof u?.photo === "string" ? u.photo : "", ok = /^(\/photos\/|https:\/\/|data:image\/)/.test(photo); return `<div class="av ${c}${ok ? " has-photo" : ""}" style="--h:${hue(name)}">${esc(name[0].toUpperCase())}${ok ? `<img src="${esc(photo)}" alt="" loading="${c.includes("lg") ? "eager" : "lazy"}" decoding="async" referrerpolicy="no-referrer" onerror="this.remove();this.parentElement.classList.remove('has-photo')">` : ""}</div>`; };
 export const chips = a => a.length ? a.map(t => `<span class="chip">${esc(t)}</span>`).join("") : '<span class="mu">No tags yet</span>';
 export const scol = m => m.block ? "var(--bad)" : m.s >= 75 ? "var(--pr)" : m.s >= 50 ? "var(--ac)" : "var(--bad)";
 export const ring = m => `<div class="ring" style="--c:${scol(m)};--p:${m.block ? 0 : m.s}"><b>${m.block ? "-" : m.s + "%"}</b></div>`;

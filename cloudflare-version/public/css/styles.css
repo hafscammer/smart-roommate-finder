@@ -311,3 +311,51 @@ textarea{resize:vertical;max-width:100%}
 .theme-toggle{color:var(--tx)!important;font-family:inherit;font-size:23px;line-height:1;font-weight:400}
 .theme-toggle:hover{color:var(--pr)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--pr) 18%,transparent),0 3px 14px color-mix(in srgb,var(--pr) 16%,transparent)}
 @media(max-width:560px){.grid{grid-template-columns:minmax(0,1fr);gap:11px}.card .cb{height:54px}.card .ch .av{width:70px;height:70px;font-size:26px}.stat{padding:11px 12px}.stat b{font-size:27px}}
+
+
+/* Profile photo must fully replace the initial, never sit beside it. */
+.av{position:relative;isolation:isolate}
+.av.has-photo{font-size:0!important;color:transparent!important}
+.av.has-photo img{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;display:block;border-radius:inherit;z-index:2}
+
+
+/* Profile photo workflow: clear actions, a calm preview reveal and identical circular crops everywhere. */
+.av{position:relative;isolation:isolate;overflow:hidden}
+.av.has-photo{font-size:0!important;color:transparent!important}
+.av.has-photo img{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;display:block;border-radius:inherit;z-index:2;opacity:0;animation:rm-photo-in .28s ease-out forwards}
+@keyframes rm-photo-in{to{opacity:1}}
+.photo{align-items:center;gap:18px}
+.photo-tools{min-width:0;flex:1}
+.photo-actions{display:flex;gap:8px;flex-wrap:wrap}
+.photo-actions button:disabled{opacity:.45}
+.photo-status{font-size:12px;margin:8px 0 2px;min-height:1.3em}
+.crop-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+.crop-spacer{flex:1}
+.cv{background:var(--bg);border:1px solid var(--bd);border-radius:16px;outline-offset:3px}
+.mbox .crop-actions button{min-width:0}
+.mbox .crop-actions [data-k=ok]{margin-left:auto}
+.mbox .crop-actions [data-k=reset]{padding:7px 10px;font-size:12px}
+/* More deliberate page frame and profile wizard rhythm across desktop and mobile. */
+.content{min-width:0;background:var(--bg)}
+#app{padding-top:clamp(24px,4vw,42px);padding-bottom:clamp(32px,5vw,56px)}
+#app>h2{margin-bottom:6px}
+#app>h2+.mu{margin-top:0;margin-bottom:18px;max-width:760px;line-height:1.55}
+.wiz{max-width:760px;padding:clamp(16px,3vw,28px);margin-top:18px;border-radius:22px;box-shadow:0 12px 34px color-mix(in srgb,var(--hd) 6%,transparent)}
+.wiz [data-s]:not([hidden]){animation:rm-enter .28s ease both}
+.wiz [data-s]>h3:first-child{font-size:20px;margin:2px 0 16px}
+.wiz .photo{padding:14px;background:var(--bg);border:1px solid var(--bd);border-radius:17px;margin:14px 0 20px}
+.wiz .two{gap:14px}
+.wiz label{margin-top:14px}
+.wiz .nav2{padding-top:16px;border-top:1px solid var(--bd)}
+.prog{max-width:760px;height:7px;margin-top:12px}
+@media(max-width:560px){
+ .photo{align-items:flex-start;gap:12px}
+ #pp,#pp .av{width:88px;height:88px}
+ .photo-tools{min-width:0}
+ .photo-actions button{padding:8px 10px;font-size:12px}
+ .wiz{padding:14px;border-radius:17px}
+ .wiz .photo{padding:11px}
+ .crop-actions{gap:6px}
+ .mbox{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){.av.has-photo img{animation:none;opacity:1}}
