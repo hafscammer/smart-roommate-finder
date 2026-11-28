@@ -328,7 +328,8 @@ document.addEventListener("input", e => {
   if (f.id === "fl") { F = Object.fromEntries([...new FormData(f)].filter(([, v]) => v)); F.sort = F.sort || "match"; clearTimeout(timer); timer = setTimeout(load, 250); }
   if (f.id === "pf") {
     const n = e.target.name; if (e.target.tagName === "SELECT") e.target.dataset.v = e.target.value;
-    if (n === "name") paintPhoto();\n    if (n === "country") syncCurrencyLabels();
+    if (n === "name") paintPhoto();
+    if (n === "country") syncCurrencyLabels();
     if (n === "city") { clearTimeout(ct); ct = setTimeout(() => { loadPlaces(); detectCountry(e.target.value.trim()); priceNow(); }, 650); }
     if (["type", "beds", "furn", "min", "max", "area", "role"].includes(n)) { clearTimeout(pt); pt = setTimeout(priceNow, 450); }
     if (n === "bio") { clearTimeout(xt); xt = setTimeout(extractNow, 500); } else if (n) { touched.add(n); if (step === 2) paintChips(); }
@@ -336,7 +337,8 @@ document.addEventListener("input", e => {
   if (f.id === "mf" && Date.now() - lastTyping > 1500) { lastTyping = Date.now(); wsSend({ type: "typing", to: +f.dataset.to }); }
 });
 document.addEventListener("change", async e => {
-  if (e.target.form?.id === "pf" && e.target.name === "country") syncCurrencyLabels();\n  if (e.target.id !== "pf-file") return; const file = e.target.files[0]; if (!file) return;
+  if (e.target.form?.id === "pf" && e.target.name === "country") syncCurrencyLabels();
+  if (e.target.id !== "pf-file") return; const file = e.target.files[0]; if (!file) return;
   if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 10e6) return toast("Choose a JPG, PNG or WebP image under 10 MB.", true);
   let r;
   try { r = await openCropper(file); } catch (err) { r = undefined; }
